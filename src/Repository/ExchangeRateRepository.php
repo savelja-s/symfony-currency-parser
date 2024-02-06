@@ -3,7 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\ExchangeRate;
+use App\Entity\ExchangeRateHistory;
+use App\Enum\CurrencyEnum;
+use App\Enum\ExchangeRateStatusEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\QueryException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,28 +25,44 @@ class ExchangeRateRepository extends ServiceEntityRepository
         parent::__construct($registry, ExchangeRate::class);
     }
 
-//    /**
-//     * @return ExchangeRate[] Returns an array of ExchangeRate objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @param  CurrencyEnum[]  $currencies
+     * @return array<CurrencyEnum,ExchangeRate>
+     * @throws QueryException
+     */
+    public function findCurrentByCurrency(array $currencies): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.status = :status')
+            ->setParameter('status', ExchangeRateStatusEnum::Current)
+            ->andWhere('e.currency IN (:currencies)')
+            ->setParameter('currencies', array_column($currencies, 'name'))
+            ->setMaxResults(count($currencies))
+            ->indexBy('e', 'e.currency')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?ExchangeRate
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @param  ExchangeRate  $exchangeRate
+     * @param  ExchangeRateHistory[]  $currencyHistories
+     * @param  ExchangeRate|null  $newExchangeRate
+     * @return void
+     */
+    public function saveExchangeRates(
+        ExchangeRate $exchangeRate,
+        array $currencyHistories,
+        ?ExchangeRate $newExchangeRate
+    ): void {
+        $em = $this->getEntityManager();
+        $entityForAdd = $exchangeRate;
+        if ($newExchangeRate) {
+            $em->persist($newExchangeRate);
+            $entityForAdd = $newExchangeRate;
+        }
+        foreach ($currencyHistories as $history) {
+            $entityForAdd->addExchangeRateHistory($history);
+        }
+        $em->flush();
+    }
 }

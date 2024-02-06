@@ -4,6 +4,12 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    EXCHANGE_RATE_THRESHOLD: '%env(int:EXCHANGE_RATE_THRESHOLD)%'
+    MAILER_NO_REPLY_EMAIL: '%env(string:MAILER_NO_REPLY_EMAIL)%'
+    EXCHANGE_RATE_MESSAGE_RECEIVER: '%env(string:EXCHANGE_RATE_MESSAGE_RECEIVER)%'
+    PRIVAT_BANK_API_URL: '%env(string:PRIVAT_BANK_API_URL)%'
+    MONOBANK_API_URL: '%env(string:MONOBANK_API_URL)%'
+
 
 services:
     # default configuration for services in *this* file

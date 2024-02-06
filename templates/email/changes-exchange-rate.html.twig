@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <table  border="1">
+        <thead>
+        <tr>
+            <th>Currency</th>
+            <th>Buy</th>
+            <th>Sale</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in changes %}
+            <tr >
+                <td>{{ item.currency.name }}</td>
+                <td>
+                    {{ (item.buy/100) }} Grn
+                    {% if item.buyThreshold != 0  %}
+                        {% if(item.buyThreshold > 0) %}
+                            <span style="color: green">({{ (item.buyThreshold/100)  }} Grn)</span>
+                        {% else %}
+                            <span style="color: red ">({{ (item.buyThreshold/100) }} Grn)</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ (item.sale/100) }} Grn
+                    {% if item.saleThreshold != 0  %}
+                        {% if(item.saleThreshold > 0) %}
+                            <span style="color: green">({{ (item.saleThreshold/100) }} Grn)</span>
+                        {% else %}
+                            <span style="color: red ">({{ (item.saleThreshold/100) }} Grn)</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
