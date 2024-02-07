@@ -5,19 +5,18 @@ namespace App\Entity;
 use App\Enum\BankEnum;
 use App\Interface\ExchangeRateEntityInterface;
 use App\Repository\ExchangeRateHistoryRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExchangeRateHistoryRepository::class)]
 class ExchangeRateHistory extends AbstractExchangeRateEntity implements ExchangeRateEntityInterface
 {
-    #[ORM\Column(type: Types::STRING, length: 15, enumType: BankEnum::class)]
+    #[ORM\Column(length: 15, enumType: BankEnum::class)]
     private BankEnum $bank;
 
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Column]
     private int $buyThreshold;
 
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Column]
     private int $saleThreshold;
 
     #[ORM\ManyToOne(inversedBy: 'exchangeRateHistories')]

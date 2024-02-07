@@ -9,26 +9,21 @@ use App\Interface\ExchangeRateEntityInterface;
 use App\Repository\ExchangeRateRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExchangeRateRepository::class)]
 class ExchangeRate extends AbstractExchangeRateEntity implements ExchangeRateEntityInterface
 {
-    #[ORM\Column(
-        type: Types::STRING,
-        length: 10,
-        enumType: ExchangeRateStatusEnum::class
-    )]
+    #[ORM\Column(length: 10, enumType: ExchangeRateStatusEnum::class)]
     private ExchangeRateStatusEnum $status = ExchangeRateStatusEnum::Current;
 
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Column]
     private int $buy;
 
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Column]
     private int $sale;
 
-    #[ORM\Column(type: Types::STRING, length: 5, enumType: CurrencyEnum::class)]
+    #[ORM\Column(length: 5, enumType: CurrencyEnum::class)]
     private CurrencyEnum $currency;
 
     #[ORM\OneToMany(
